@@ -274,11 +274,13 @@ def move_block(pub_cmd, loop_rate, start_loc, start_height, \
     # suction go brr
     gripper(pub_cmd, loop_rate, suction_on)
     # we should add a wait here
+    time.sleep(0.5) 
 
     # oops i think we missed the block
     if digital_in_0 == 0:
         rospy.loginfo("i cant pick it up :( )")
         error = 1
+        gripper(pub_cmd, loop_rate, suction_off)
         return error
 
     # if we got it we go up and hover over the tower we just picked up a block from
@@ -340,36 +342,38 @@ def main():
     while(not input_done):
 
         # user input string 
-        # start_string = input("Enter Start Tower <0 for A, 1 for B, 2 for C>: ")
+        start_string = input("Enter Start Tower <0 for A, 1 for B, 2 for C>: ")
 
-        # goal_string = input("Enter Goal Tower <0 for A, 1 for B, 2 for C>: ")
+        goal_string = input("Enter Goal Tower <0 for A, 1 for B, 2 for C>: ")
 
-        # start_tower = int(start_string)
-        # goal_tower = int(goal_string)
+        start_tower = int(start_string)
+        goal_tower = int(goal_string)
 
-        # if start_tower in [0,1,2] and goal_tower in [0,1,2] and start_tower != goal_tower:
-        #     input_done = 1
-        #     loop_count = 1
-        # else:
-        #     print("Invalid Input")
-
-        input_string = input("Enter number of loops <Either 1 2 3 or 0 to quit> ")
-        print("You entered " + input_string + "\n")
-
-        if(int(input_string) == 1):
+        if start_tower in [0,1,2] and goal_tower in [0,1,2] and start_tower != goal_tower:
             input_done = 1
             loop_count = 1
-        elif (int(input_string) == 2):
-            input_done = 1
-            loop_count = 2
-        elif (int(input_string) == 3):
-            input_done = 1
-            loop_count = 3
-        elif (int(input_string) == 0):
-            print("Quitting... ")
-            sys.exit()
         else:
-            print("Please just enter the character 1 2 3 or 0 to quit \n\n")
+            print("Invalid Input")
+
+        # input_string = input("Enter number of loops <Either 1 2 3 or 0 to quit> ")
+        # print("You entered " + input_string + "\n")
+
+        # if(int(input_string) == 1):
+        #     input_done = 1
+        #     loop_count = 1
+        # elif (int(input_string) == 2):
+        #     input_done = 1
+        #     loop_count = 2
+        # elif (int(input_string) == 3):
+        #     input_done = 1
+        #     loop_count = 3
+        # elif (int(input_string) == 0):
+        #     print("Quitting... ")
+        #     sys.exit()
+        # else:
+        #     print("Please just enter the character 1 2 3 or 0 to quit \n\n")
+        input_done = 1
+        loop_count = 1
 
 
 
@@ -393,23 +397,40 @@ def main():
         move_arm(pub_command, loop_rate, home, 4.0, 4.0)
 
         S = start_tower # start tower
-        E = goal_tower # end tower 
+        E = goal_tower # end tower
+        M = 3 - S - E
         # we need to determine the middle tower too 
 
 
         # now we determine the 7 steps 
-        rospy.loginfo("Sending goal 1 ...")
-        move_arm(pub_command, loop_rate, Q[0][0], 4.0, 4.0)
+        rospy.loginfo("Sending move 1 ...")
+        if move_block(pub_cmd=pub_command, loop_rate=loop_rate, start_loc=S, start_height=2, end_loc=E, end_height=0):
+            return
 
-        gripper(pub_command, loop_rate, suction_on)
-        # Delay to make sure suction cup has grasped the block
-        time.sleep(1.0)
+        # rospy.loginfo("Sending move 2 ...")
+        if move_block(pub_cmd=pub_command, loop_rate=loop_rate, start_loc=S, start_height=1, end_loc=M, end_height=0):
+            return
 
-        rospy.loginfo("Sending goal 2 ...")
-        move_arm(pub_command, loop_rate, Q[1][1], 4.0, 4.0)
+        # rospy.loginfo("Sending move 3 ...")
+        if move_block(pub_cmd=pub_command, loop_rate=loop_rate, start_loc=E, start_height=0, end_loc=M, end_height=1):
+            return
 
-        rospy.loginfo("Sending goal 3 ...")
-        move_arm(pub_command, loop_rate, Q[2][2], 4.0, 4.0)
+        # rospy.loginfo("Sending move 4 ...")
+        if move_block(pub_cmd=pub_command, loop_rate=loop_rate, start_loc=S, start_height=0, end_loc=E, end_height=0):
+            return
+
+        # rospy.loginfo("Sending move 5 ...")
+        if move_block(pub_cmd=pub_command, loop_rate=loop_rate, start_loc=M, start_height=1, end_loc=S, end_height=0):
+            return
+
+        # rospy.loginfo("Sending move 6 ...")
+        if move_block(pub_cmd=pub_command, loop_rate=loop_rate, start_loc=M, start_height=0, end_loc=E, end_height=1):
+            return
+
+        # rospy.loginfo("Sending move 7 ...")
+        if move_block(pub_cmd=pub_command, loop_rate=loop_rate, start_loc=S, start_height=0, end_loc=E, end_height=2):
+            return
+        
 
         loop_count = loop_count - 1
 
