@@ -25,55 +25,63 @@ SPIN_RATE = 20
 # home = np.radians([120, -90, 90, -90, -90, 0])
 home = np.radians([214, -33.21, 47.11, -103.73, -90.36, 337.86-360])
 
-# Hanoi tower location A
-Q11 = [214*pi/180.0, -31.96*pi/180.0, 48.79*pi/180.0, -106.64*pi/180.0, -90.34*pi/180.0, (-22.15)*pi/180.0]
-Q12 = [214*pi/180.0, -36.09*pi/180.0, 48.94*pi/180.0, -103.88*pi/180.0, -90.11*pi/180.0, (-22.22)*pi/180.0]
-Q13 = [196.06*pi/180.0, -45.13*pi/180.0, 95.6*pi/180.0, -140.09*pi/180.0, -90.12*pi/180.0, (-40.29)*pi/180.0]
-
 # Tower A
-# hover
-214 -34.34 44.72 -100.12 -90.38 337.88
-# 3
-Q11 = [214*pi/180.0, -31.96*pi/180.0, 48.79*pi/180.0, -106.64*pi/180.0, -90.34*pi/180.0, (-22.15)*pi/180.0]
-# 2
-214 -28.67 51.12 -112.19 -90.30 337.83
-# 1
-214 -24.74 52 -117.01 -90.27 337.82
+QA_hover = [214*pi/180.0, -34.34*pi/180.0, 44.72*pi/180.0, -100.12*pi/180.0, -90.38*pi/180.0, (337.88-360)*pi/180.0]
+QA_3     = [214*pi/180.0, -31.96*pi/180.0, 48.79*pi/180.0, -106.64*pi/180.0, -90.34*pi/180.0, (-22.15)*pi/180.0]
+QA_2     = [214*pi/180.0, -28.67*pi/180.0, 51.12*pi/180.0, -112.19*pi/180.0, -90.30*pi/180.0, (337.83-360)*pi/180.0]
+QA_1     = [214*pi/180.0, -24.74*pi/180.0, 52*pi/180.0, -117.01*pi/180.0, -90.27*pi/180.0, (337.82-360)*pi/180.0]
 
 # Tower B
-# hover 
-206 -49.09 72.56 -113.24 -90.33 329.9
-# 3
-206 -45.76 75.5 -119.5 -90.33 329.9
-# 2 
-206 -41.78 77.36 -125.35 -90.33 329.9
-# 1
-206 -36.42 78.19 -131.54 -90.33 329.9
+QB_hover = [206*pi/180.0, -49.09*pi/180.0, 72.56*pi/180.0, -113.24*pi/180.0, -90.33*pi/180.0, (329.9-360)*pi/180.0]
+QB_3     = [206*pi/180.0, -45.76*pi/180.0, 75.5*pi/180.0, -119.5*pi/180.0, -90.33*pi/180.0, (329.9-360)*pi/180.0]
+QB_2     = [206*pi/180.0, -41.78*pi/180.0, 77.36*pi/180.0, -125.35*pi/180.0, -90.33*pi/180.0, (329.9-360)*pi/180.0]
+QB_1     = [206*pi/180.0, -36.42*pi/180.0, 78.19*pi/180.0, -131.54*pi/180.0, -90.33*pi/180.0, (329.9-360)*pi/180.0]
 
 # Tower C
+QC_hover = [196.94*pi/180.0, -58.66*pi/180.0, 89.11*pi/180.0, -120.25*pi/180.0, -90.41*pi/180.0, (320.64-360)*pi/180.0]
+QC_3     = [196.94*pi/180.0, -54.55*pi/180.0, 92.04*pi/180.0, -127.29*pi/180.0, -90.41*pi/180.0, (320.64-360)*pi/180.0]
+QC_2     = [196.94*pi/180.0, -49.44*pi/180.0, 93.95*pi/180.0, -134.32*pi/180.0, -90.41*pi/180.0, (320.64-360)*pi/180.0]
+QC_1     = [196.94*pi/180.0, -44.46*pi/180.0, 94.63*pi/180.0, -139.98*pi/180.0, -90.41*pi/180.0, (320.64-360)*pi/180.0]
 
-# hover 
-196.94 -58.66 89.11 -120.25 -90.41 320.64
-# 3
-196.94 -54.55 92.04 -127.29 -90.41 320.64
-# 2 
-196.94 -49.44 93.95 -134.32 -90.41 320.64
-# 1
-196.94 -44.46 94.63 -139.98 -90.41 320.64
+# # Hanoi tower location A
+# Q11 = [214*pi/180.0, -31.96*pi/180.0, 48.79*pi/180.0, -106.64*pi/180.0, -90.34*pi/180.0, (-22.15)*pi/180.0]
+# Q12 = [214*pi/180.0, -36.09*pi/180.0, 48.94*pi/180.0, -103.88*pi/180.0, -90.11*pi/180.0, (-22.22)*pi/180.0]
+# Q13 = [196.06*pi/180.0, -45.13*pi/180.0, 95.6*pi/180.0, -140.09*pi/180.0, -90.12*pi/180.0, (-40.29)*pi/180.0]
+
+# # Tower A
+# # hover
+# 214 -34.34 44.72 -100.12 -90.38 337.88
+# # 3
+# Q11 = [214*pi/180.0, -31.96*pi/180.0, 48.79*pi/180.0, -106.64*pi/180.0, -90.34*pi/180.0, (-22.15)*pi/180.0]
+# # 2
+# 214 -28.67 51.12 -112.19 -90.30 337.83
+# # 1
+# 214 -24.74 52 -117.01 -90.27 337.82
+
+# # Tower B
+# # hover 
+# 206 -49.09 72.56 -113.24 -90.33 329.9
+# # 3
+# 206 -45.76 75.5 -119.5 -90.33 329.9
+# # 2 
+# 206 -41.78 77.36 -125.35 -90.33 329.9
+# # 1
+# 206 -36.42 78.19 -131.54 -90.33 329.9
+
+# # Tower C
+
+# # hover 
+# 196.94 -58.66 89.11 -120.25 -90.41 320.64
+# # 3
+# 196.94 -54.55 92.04 -127.29 -90.41 320.64
+# # 2 
+# 196.94 -49.44 93.95 -134.32 -90.41 320.64
+# # 1
+# 196.94 -44.46 94.63 -139.98 -90.41 320.64
 
 
 
 # Hanoi tower location A
-# Q11 = [120*pi/180.0, -56*pi/180.0, 124*pi/180.0, -158*pi/180.0, -90*pi/180.0, 0*pi/180.0]
-# Q12 = [120*pi/180.0, -64*pi/180.0, 123*pi/180.0, -148*pi/180.0, -90*pi/180.0, 0*pi/180.0]
-# Q13 = [120*pi/180.0, -72*pi/180.0, 120*pi/180.0, -137*pi/180.0, -90*pi/180.0, 0*pi/180.0]
-
-# # Hanoi tower location B
-# Q11 = [120*pi/180.0, -56*pi/180.0, 124*pi/180.0, -158*pi/180.0, -90*pi/180.0, 0*pi/180.0]
-# Q12 = [120*pi/180.0, -64*pi/180.0, 123*pi/180.0, -148*pi/180.0, -90*pi/180.0, 0*pi/180.0]
-# Q13 = [120*pi/180.0, -72*pi/180.0, 120*pi/180.0, -137*pi/180.0, -90*pi/180.0, 0*pi/180.0]
-
-# # Hanoi tower location C
 # Q11 = [120*pi/180.0, -56*pi/180.0, 124*pi/180.0, -158*pi/180.0, -90*pi/180.0, 0*pi/180.0]
 # Q12 = [120*pi/180.0, -64*pi/180.0, 123*pi/180.0, -148*pi/180.0, -90*pi/180.0, 0*pi/180.0]
 # Q13 = [120*pi/180.0, -72*pi/180.0, 120*pi/180.0, -137*pi/180.0, -90*pi/180.0, 0*pi/180.0]
@@ -99,11 +107,23 @@ current_position = copy.deepcopy(home)
 """
 TODO: Initialize Q matrix
 """
+# Tower A
+Tower_A = [QA_1, QA_2, QA_3, QA_hover]
 
-Q = [ [Q11, Q12, Q13], \
-      [Q11, Q12, Q13], \
-      [Q11, Q12, Q13] ]
+#Tower B
+Tower_B = [QB_1, QB_2, QB_3, QB_hover]
+
+#Tower C
+Tower_C = [QC_1, QC_2, QC_3, QC_hover]
+
+Q = [Tower_A, Tower_B, Tower_C] 
+
+# Q = [ [Q11, Q12, Q13], \
+#       [Q11, Q12, Q13], \
+#       [Q11, Q12, Q13] ]
 ############### Your Code End Here ###############
+
+
 
 ############## Your Code Start Here ##############
 
@@ -111,7 +131,10 @@ Q = [ [Q11, Q12, Q13], \
 TODO: define a ROS topic callback funtion for getting the state of suction cup
 Whenever ur3/gripper_input publishes info this callback function is called.
 """
-
+# callback function for suciton state
+def gripper_input_callback(msg):
+    global digital_in_0
+    digital_in_0 = msg.DIGIN # 1 for successful fuction, 0 for not
 
 
 
@@ -236,11 +259,44 @@ def move_arm(pub_cmd, loop_rate, dest, vel, accel):
 def move_block(pub_cmd, loop_rate, start_loc, start_height, \
                end_loc, end_height):
     global Q
-
+    global digital_in_0
     ### Hint: Use the Q array to map out your towers by location and "height".
 
     error = 0
 
+    # hover over start tower 
+    move_arm(pub_cmd, loop_rate, Q[start_loc][3], 4.0, 4.0)
+
+    # go down to pick up block 
+
+    move_arm(pub_cmd, loop_rate, Q[start_loc][start_height], 4.0, 4.0)
+
+    # suction go brr
+    gripper(pub_cmd, loop_rate, suction_on)
+    # we should add a wait here
+
+    # oops i think we missed the block
+    if digital_in_0 == 0:
+        rospy.loginfo("i cant pick it up :( )")
+        error = 1
+        return error
+
+    # if we got it we go up and hover over the tower we just picked up a block from
+    move_arm(pub_cmd, loop_rate, Q[start_loc][3], 4.0, 4.0)
+
+    # now we move to the tower we want to place the block at 
+    move_arm(pub_cmd, loop_rate, Q[end_loc][3], 4.0, 4.0)
+
+
+    # and now we want to place the block down 
+    move_arm(pub_cmd, loop_rate, Q[end_loc][end_height], 4.0, 4.0)
+
+    # release the suction so the block gets placed (added a wait so it like doesnt rush)
+    gripper(pub_cmd, loop_rate, suction_off)
+    time.sleep(0.5) 
+
+    # now we want to go back up and hover and steer clear of any blocks 
+    move_arm(pub_cmd, loop_rate, Q[end_loc][3], 4.0, 4.0)
 
 
     return error
@@ -268,6 +324,7 @@ def main():
     ############## Your Code Start Here ##############
     # TODO: define a ROS subscriber for ur3/gripper_input message and corresponding callback function
 
+    sub_gripper = rospy.Subscriber('ur3/gripper_input', gripper_input, gripper_input_callback)
 
     ############### Your Code End Here ###############
 
@@ -277,8 +334,25 @@ def main():
 
     input_done = 0
     loop_count = 0
+    start_tower = 0
+    goal_tower = 0
 
     while(not input_done):
+
+        # user input string 
+        # start_string = input("Enter Start Tower <0 for A, 1 for B, 2 for C>: ")
+
+        # goal_string = input("Enter Goal Tower <0 for A, 1 for B, 2 for C>: ")
+
+        # start_tower = int(start_string)
+        # goal_tower = int(goal_string)
+
+        # if start_tower in [0,1,2] and goal_tower in [0,1,2] and start_tower != goal_tower:
+        #     input_done = 1
+        #     loop_count = 1
+        # else:
+        #     print("Invalid Input")
+
         input_string = input("Enter number of loops <Either 1 2 3 or 0 to quit> ")
         print("You entered " + input_string + "\n")
 
@@ -318,6 +392,12 @@ def main():
 
         move_arm(pub_command, loop_rate, home, 4.0, 4.0)
 
+        S = start_tower # start tower
+        E = goal_tower # end tower 
+        # we need to determine the middle tower too 
+
+
+        # now we determine the 7 steps 
         rospy.loginfo("Sending goal 1 ...")
         move_arm(pub_command, loop_rate, Q[0][0], 4.0, 4.0)
 
