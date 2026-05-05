@@ -4,11 +4,11 @@ import sys
 import os
 import copy
 import time
-# import rospy
+import rospy
 
 
 import numpy as np
-# from final_header import *
+from final_header import *
 from final_func import *
 from final_helpers import *
 import cv2 as cv
@@ -19,7 +19,6 @@ from matplotlib import pyplot as plt
 
 # 20Hz
 SPIN_RATE = 20  
-PI = 3.1415926535
 
 # UR3 home location
 home = [270*PI/180.0, -90*PI/180.0, 90*PI/180.0, -90*PI/180.0, -90*PI/180.0, 135*PI/180.0]  
@@ -311,27 +310,27 @@ def main():
     # global variable2
 
     # Initialize ROS node
-    # rospy.init_node('lab5node')
+    rospy.init_node('lab5node')
 
-    # # Initialize publisher for ur3/command with buffer size of 10
-    # pub_command = rospy.Publisher('ur3/command', command, queue_size=10)
+    # Initialize publisher for ur3/command with buffer size of 10
+    pub_command = rospy.Publisher('ur3/command', command, queue_size=10)
 
-    # # Initialize subscriber to ur3/position & ur3/gripper_input and callback fuction
-    # # each time data is published
-    # sub_position = rospy.Subscriber('ur3/position', position, position_callback)
-    # sub_input = rospy.Subscriber('ur3/gripper_input', gripper_input, input_callback)
+    # Initialize subscriber to ur3/position & ur3/gripper_input and callback fuction
+    # each time data is published
+    sub_position = rospy.Subscriber('ur3/position', position, position_callback)
+    sub_input = rospy.Subscriber('ur3/gripper_input', gripper_input, input_callback)
 
-    # # Check if ROS is ready for operation
-    # while(rospy.is_shutdown()):
-    #     print("ROS is shutdown!")
+    # Check if ROS is ready for operation
+    while(rospy.is_shutdown()):
+        print("ROS is shutdown!")
 
-    # # Initialize the rate to publish to ur3/command
-    # loop_rate = rospy.Rate(SPIN_RATE)
+    # Initialize the rate to publish to ur3/command
+    loop_rate = rospy.Rate(SPIN_RATE)
 
-    # # Velocity and acceleration of the UR3 arm
-    # vel = 4.0
-    # accel = 4.0
-    # move_arm(pub_command, loop_rate, home, vel, accel, 'J')  # Move to the home position
+    # Velocity and acceleration of the UR3 arm
+    vel = 4.0
+    accel = 4.0
+    move_arm(pub_command, loop_rate, home, vel, accel, 'J')  # Move to the home position
 
     ##========= TODO: Read and draw a given image =========##
 
@@ -378,17 +377,16 @@ def main():
 
     ##=====================================================##
 
-    # move_arm(pub_command, loop_rate, home, vel, accel, 'J')  # Return to the home position
-    # rospy.loginfo("Task Completed!")
+    move_arm(pub_command, loop_rate, home, vel, accel, 'J')  # Return to the home position
+    rospy.loginfo("Task Completed!")
 
-    # print("Use Ctrl+C to exit program")
-    # rospy.spin()
+    print("Use Ctrl+C to exit program")
+    rospy.spin()
 
 if __name__ == '__main__':
 
     try:
         main()
     # When Ctrl+C is executed, it catches the exception
-    # except rospy.ROSInterruptException:
-    except:
+    except rospy.ROSInterruptException:
         pass
