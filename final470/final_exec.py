@@ -183,13 +183,9 @@ def find_keypoints(image):
         a list of keypoints detected in image coordinates
     """
 
-    # load image
-    img = cv.imread(image, cv.IMREAD_GRAYSCALE)
-    assert img is not None, "file could not be read, check with os.path.exists()"
+    img_color = cv.cvtColor(image, cv.COLOR_GRAY2BGR)
 
-    img_color = cv.cvtColor(img, cv.COLOR_GRAY2BGR)
-
-    canny_img = cv.Canny(img, 100, 200)
+    canny_img = cv.Canny(image, 100, 200)
     contours, hierarchy = cv.findContours(canny_img, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)
 
     keypoints = []
@@ -278,9 +274,23 @@ def main():
     move_arm(pub_command, loop_rate, home, vel, accel, 'J')  # Move to the home position
 
     ##========= TODO: Read and draw a given image =========##
+
+    image_choice = input("Select a file to draw: ")
+
+    switcher = {
+        "cat": "cat.jpg",
+        "corn": "corn.jpeg",
+        "zigzag": "zigzag.jpg",
+        # "dog": "dog.jpg",
+        # "fine": "fine.jpg"
+    }
+    file = switcher.get(image_choice, "Invalid file choice")
+
+    # load image
+    img = cv.imread(file, cv.IMREAD_GRAYSCALE)
+    assert img is not None, "file could not be read, check with os.path.exists()"
     
-    find_keypoints('images/corn.jpeg')
-     
+    keypoints = find_keypoints(img)
 
     ##=====================================================##
 
