@@ -11,29 +11,19 @@ def Get_MS():
 	# =================== Your code starts here ====================#
 	# Fill in the correct values for w1~6 and v1~6, as well as the M matrix
 	M = np.array([[0, -1, 0, 390],[0, 0, -1, 401],[1, 0, 0, 215.5],[0, 0, 0, 1]])
-	# S1
+	
 	w1 = np.array([0,0,1])
-	# S2
 	w2 = np.array([0,1,0])
-	# S3
 	w3 = np.array([0,1,0])
-	# S4
 	w4 = np.array([0,1,0])
-	# S5
 	w5 = np.array([1,0,0])
-	# S6
 	w6 = np.array([0,1,0])
-	# M
+
 	q1= np.array([-150,150,10])
-	# S2
 	q2 = np.array([-150,270,162])
-	# S3
 	q3 = np.array([94,270,162])
-	# S4
 	q4 = np.array([307,177,162])
-	# S5
 	q5 = np.array([307, 260,162])
-	# S6
 	q6 = np.array([390,260,162])
 
 	v1 = np.cross(-w1, q1)
@@ -48,8 +38,6 @@ def Get_MS():
 
 	S = np.vstack([w,v])
 
-
-
 	# ==============================================================#
 	return M, S
 
@@ -62,7 +50,7 @@ def lab_fk(theta1, theta2, theta3, theta4, theta5, theta6):
 	# Initialize the return_value
 	return_value = [None, None, None, None, None, None]
 
-	print("Foward kinematics calculated:\n")
+	# print("Foward kinematics calculated:\n")
 
 	# =================== Your code starts here ====================#
 	# theta = np.array([theta1,theta2,theta3,theta4,theta5,theta6])
@@ -70,10 +58,8 @@ def lab_fk(theta1, theta2, theta3, theta4, theta5, theta6):
 
 	M, S = Get_MS()
 
-	T = M
 	thetas = np.array([theta1, theta2, theta3, theta4, theta5, theta6])
 	T = calculate_poe(S, M, np.array([theta1, theta2, theta3, theta4, theta5, theta6]))
-
 
 	# ==============================================================#
 
@@ -128,9 +114,10 @@ def lab_invk(xWgrip, yWgrip, zWgrip, yaw_WgripDegree):
 	ycen = ygrip - np.sin(yaw_gripRad) * 53.5
 	zcen = zgrip
 	
-	print(xcen)
-	print(ycen)
-	print(zcen)
+	# print(xcen)
+	# print(ycen)
+	# print(zcen)
+
 	#THETA 1 calculation 
 	dist = np.sqrt(xcen**2 + ycen**2)
 	val1 = 110 / dist
@@ -151,7 +138,7 @@ def lab_invk(xWgrip, yWgrip, zWgrip, yaw_WgripDegree):
         [0.0, 0.0, 1.0 ]
     ])
 	world_3end = T @ cen_vector
-	print(world_3end)
+	# print(world_3end)
 	L1 = 152.0
 	L3 = 244.0  
 	L5 = 213
@@ -160,33 +147,29 @@ def lab_invk(xWgrip, yWgrip, zWgrip, yaw_WgripDegree):
 	z3end = zcen + 141.0 # (82 +59)
 	
 	org_to_3end = np.sqrt(x3end**2 + y3end**2)
-
-
 	loc_triangle = np.sqrt(org_to_3end**2 + (z3end-L1)**2)
 
 	arg = (L5**2 + L3**2 - loc_triangle**2) / (2*L5*L3)
 	theta3_o = np.arccos(np.clip(arg, -1.0, 1.0))
+	theta3 = np.pi - theta3_o
 
 	theta2_s = np.arctan2((z3end-L1),org_to_3end)
-
 	cos_val = (L3**2 + loc_triangle**2 - L5**2) / (2*L3*loc_triangle)
 	theta2_l = np.arccos(np.clip(cos_val, -1.0, 1.0))	
-	
 	theta2 = -(theta2_s + theta2_l)
 
 	length = (L3 * np.sin(-theta2)) - (z3end-L1)
-
 	sin_val = length / L5
 	theta4 = -(np.arcsin(np.clip(sin_val, -1.0, 1.0)))
 	
-	theta3 = np.pi - theta3_o
 	theta5 = -np.pi/2
 	theta6 = np.pi/2 - (yaw_gripRad - theta1)
-	print(theta1)
-	print(theta2)
-	print(theta3)
-	print(theta4)
-	print(theta5)
-	print(theta6)
+	
+	# print(theta1)
+	# print(theta2)
+	# print(theta3)
+	# print(theta4)
+	# print(theta5)
+	# print(theta6)
 	# ==============================================================#
 	return lab_fk(theta1, theta2, theta3, theta4, theta5, theta6)
