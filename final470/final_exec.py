@@ -289,8 +289,16 @@ def main():
     # load image
     img = cv.imread(file, cv.IMREAD_GRAYSCALE)
     assert img is not None, "file could not be read, check with os.path.exists()"
-    
+
+    if img.shape[1] > img.shape[0]:  # wider than tall → rotate to portrait
+        img = cv.rotate(img, cv.ROTATE_90_CLOCKWISE)
+
     keypoints = find_keypoints(img)
+
+    image_height, image_width = img.shape[:2]
+    world_keypoints = [IMG2W(kp.pt[0], kp.pt[1], image_width, image_height) for kp in keypoints]
+
+    draw_image(world_keypoints)
 
     ##=====================================================##
 
