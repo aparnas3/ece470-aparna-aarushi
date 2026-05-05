@@ -212,51 +212,24 @@ def find_keypoints(image):
 
     return keypoints
 
-# Params for camera calibration
-Or = -240   # pixels
-Oc = -320
-tx = 210   # mm
-ty = 6
+HOVER_HEIGHT = 30
+DRAWING_HEIGHT = 10
+
+PAPER_X = 125
+PAPER_Y = 60
+
+PAPER_X_RANGE = 280
+PAPER_Y_RANGE = 215
 
 world_pixel = np.array([320,82])
 
-# from calibration stick held against ur3 base frame
-orange_kp_1 = np.array([400.44989013671875, 91.65684509277344])
-orange_kp_2 = np.array([325.2305603027344, 92.06688690185547])
-calib_dist = np.linalg.norm(orange_kp_1-orange_kp_2)    # pixels
-theta = np.arctan2(orange_kp_1[1]-orange_kp_2[1], orange_kp_1[0]-orange_kp_2[0])
-beta = 100/(calib_dist)   # 10 cm -> mm
-
-# print(theta)
-
-T_cw = np.array([
-    [np.cos(theta), -np.sin(theta), tx],
-    [np.sin(theta), np.cos(theta), ty],
-    [0,0,1]
-])
-
 # Function that converts image coord to world coord
-def IMG2W(col, row):
-    # print("====PIXELS===")
-    # print(col)
-    # print(row)
+# Width should be the shorter col dimension (the image is already in portrait)
+def IMG2W(col, row, image_width, image_height):
+    scale = min(PAPER_X_RANGE/image_height, PAPER_Y_RANGE/image_width)
 
-    x_c = (Or + row)*beta
-    y_c = (Oc + col)*beta
-    
-    coord_c = np.array([
-        [x_c],
-        [y_c],
-        [1]     # placeholder
-    ])
-
-    # print("===COORD_C")
-    # print(coord_c)
-
-    coord_w = T_cw @ coord_c
-    coord_w[2][0] = 29  # mm
-
-    x, y, _ = coord_w.flatten()
+    x = row*scale + PAPER_X
+    y = col*scale + PAPER_Y
 
     return x, y
 
