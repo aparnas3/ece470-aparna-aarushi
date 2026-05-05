@@ -184,20 +184,35 @@ def find_keypoints(image):
     """
 
     img_color = cv.cvtColor(image, cv.COLOR_GRAY2BGR)
-
+    # blurred = cv.GaussianBlur(img, (5, 5), 0)
     canny_img = cv.Canny(image, 100, 200)
-    contours, hierarchy = cv.findContours(canny_img, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)
+    contours, hierarchy = cv.findContours(canny_img, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+
+    all_contours_keypoints = [] # This will hold lists of coordinates
 
     keypoints = []
+    sample_rate = 2 # Keep every 5th point
+    epsilon = 0.5  # Smaller value for less aggressive approximation
+    
     for cnt in contours:
-        for point in cnt:
-            x, y = point[0]
+        approx = cv.approxPolyDP(cnt, epsilon, closed=False)
+
+        contour_kps = [] # The points for THIS specific shape
+
+        for i in range(0, len(approx), sample_rate):
+            x, y = approx[i][0]
+
+            # Store the raw pixel coordinates directly as a tuple
+            contour_kps.append((float(x), float(y)))
             keypoints.append(cv.KeyPoint(float(x), float(y), 1))
+
+        # Only add the shape if it has at least 2 points to draw a line
+        if len(contour_kps) > 1:
+            all_contours_keypoints.append(contour_kps)
 
     img_with_kp = cv.drawKeypoints(img_color, keypoints, None, color=(0, 255, 0))
 
     cv.imshow('Keypoints', img_with_kp)
-    cv.waitKey(0)
 
     # plt.subplot(121),plt.imshow(img,cmap = 'gray')
     # plt.title('Original Image'), plt.xticks([]), plt.yticks([])
@@ -206,7 +221,7 @@ def find_keypoints(image):
     
     # plt.show()
 
-    return keypoints
+    return all_contours_keypoints
 
 HOVER_HEIGHT = 30
 DRAWING_HEIGHT = 10
