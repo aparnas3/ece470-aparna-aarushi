@@ -247,7 +247,7 @@ def IMG2W(col, row, image_width, image_height):
 
     return x, y
 
-def draw_image(world_keypoints):
+def draw_image(world_keypoints, pub_cmd, loop_rate, vel, accel):
     """Draw the image based on detected keypoints in world coordinates. 
     You can use any algorithm you want to draw the image, using the keypoints detected in world coordinates. 
 
@@ -256,7 +256,49 @@ def draw_image(world_keypoints):
     world_keypoints:
         a list of keypoints detected in world coordinates
     """
-    pass
+    YAW = 0.0
+
+    remaining = [list(c) for c in world_keypoints]
+    current_pos = remaining[0][0]
+
+    while remaining:
+        # Greedy: pick contour (and direction) whose endpoint is closest to current_pos
+        best_idx = None
+        best_dist = float('inf')
+        best_reversed = False
+
+        for i, contour in enumerate(remaining):
+            d_start = np.hypot(contour[0][0] - current_pos[0], contour[0][1] - current_pos[1])
+            d_end   = np.hypot(contour[-1][0] - current_pos[0], contour[-1][1] - current_pos[1])
+            if d_start < best_dist:
+                best_dist, best_idx, best_reversed = d_start, i, False
+            if d_end < best_dist:
+                best_dist, best_idx, best_reversed = d_end, i, True
+
+        contour = remaining.pop(best_idx)
+        if best_reversed:
+            contour = list(reversed(contour))
+
+        # Hover to first point
+        x0, y0 = contour[0]
+        dest = lab_invk(x0, y0, HOVER_HEIGHT, YAW)
+        move_arm(pub_cmd, loop_rate, dest, vel, accel, 'J')
+
+        # Pen down
+        dest = lab_invk(x0, y0, DRAWING_HEIGHT, YAW)
+        move_arm(pub_cmd, loop_rate, dest, vel, accel, 'L')
+
+        # Draw contour
+        for x, y in contour[1:]:
+            dest = lab_invk(x, y, DRAWING_HEIGHT, YAW)
+            move_arm(pub_cmd, loop_rate, dest, vel, accel, 'L')
+
+        # Pen up
+        x_last, y_last = contour[-1]
+        dest = lab_invk(x_last, y_last, HOVER_HEIGHT, YAW)
+        move_arm(pub_cmd, loop_rate, dest, vel, accel, 'L')
+
+        current_pos = contour[-1]
 
 ##==========================================##
 
@@ -320,7 +362,7 @@ def main():
         for contour in keypoints
     ]
 
-    draw_image(world_keypoints)
+    draw_image(world_keypoints, pub_command, loop_rate, vel, accel)
 
     fig, ax = plt.subplots()
     for contour in world_keypoints:
