@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 
 import sys
+import os
 import copy
 import time
-import rospy
+# import rospy
 
 
 import numpy as np
-from final_header import *
+# from final_header import *
 from final_func import *
 from final_helpers import *
 import cv2 as cv
@@ -18,6 +19,7 @@ from matplotlib import pyplot as plt
 
 # 20Hz
 SPIN_RATE = 20  
+PI = 3.1415926535
 
 # UR3 home location
 home = [270*PI/180.0, -90*PI/180.0, 90*PI/180.0, -90*PI/180.0, -90*PI/180.0, 135*PI/180.0]  
@@ -237,10 +239,11 @@ world_pixel = np.array([320,82])
 # Function that converts image coord to world coord
 # Width should be the shorter col dimension (the image is already in portrait)
 def IMG2W(col, row, image_width, image_height):
-    scale = min(PAPER_X_RANGE/image_height, PAPER_Y_RANGE/image_width)
+    # 5 mm of margin in all directions
+    scale = min((PAPER_X_RANGE-10)/image_height, (PAPER_Y_RANGE-10)/image_width)
 
-    x = row*scale + PAPER_X
-    y = col*scale + PAPER_Y
+    x = row*scale + PAPER_X + 5
+    y = col*scale + PAPER_Y + 5
 
     return x, y
 
@@ -266,27 +269,27 @@ def main():
     # global variable2
 
     # Initialize ROS node
-    rospy.init_node('lab5node')
+    # rospy.init_node('lab5node')
 
-    # Initialize publisher for ur3/command with buffer size of 10
-    pub_command = rospy.Publisher('ur3/command', command, queue_size=10)
+    # # Initialize publisher for ur3/command with buffer size of 10
+    # pub_command = rospy.Publisher('ur3/command', command, queue_size=10)
 
-    # Initialize subscriber to ur3/position & ur3/gripper_input and callback fuction
-    # each time data is published
-    sub_position = rospy.Subscriber('ur3/position', position, position_callback)
-    sub_input = rospy.Subscriber('ur3/gripper_input', gripper_input, input_callback)
+    # # Initialize subscriber to ur3/position & ur3/gripper_input and callback fuction
+    # # each time data is published
+    # sub_position = rospy.Subscriber('ur3/position', position, position_callback)
+    # sub_input = rospy.Subscriber('ur3/gripper_input', gripper_input, input_callback)
 
-    # Check if ROS is ready for operation
-    while(rospy.is_shutdown()):
-        print("ROS is shutdown!")
+    # # Check if ROS is ready for operation
+    # while(rospy.is_shutdown()):
+    #     print("ROS is shutdown!")
 
-    # Initialize the rate to publish to ur3/command
-    loop_rate = rospy.Rate(SPIN_RATE)
+    # # Initialize the rate to publish to ur3/command
+    # loop_rate = rospy.Rate(SPIN_RATE)
 
-    # Velocity and acceleration of the UR3 arm
-    vel = 4.0
-    accel = 4.0
-    move_arm(pub_command, loop_rate, home, vel, accel, 'J')  # Move to the home position
+    # # Velocity and acceleration of the UR3 arm
+    # vel = 4.0
+    # accel = 4.0
+    # move_arm(pub_command, loop_rate, home, vel, accel, 'J')  # Move to the home position
 
     ##========= TODO: Read and draw a given image =========##
 
@@ -300,9 +303,10 @@ def main():
         # "fine": "fine.jpg"
     }
     file = switcher.get(image_choice, "Invalid file choice")
+    img_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'images', file)
 
     # load image
-    img = cv.imread(file, cv.IMREAD_GRAYSCALE)
+    img = cv.imread(img_path, cv.IMREAD_GRAYSCALE)
     assert img is not None, "file could not be read, check with os.path.exists()"
 
     if img.shape[1] > img.shape[0]:  # wider than tall → rotate to portrait
@@ -311,22 +315,38 @@ def main():
     keypoints = find_keypoints(img)
 
     image_height, image_width = img.shape[:2]
-    world_keypoints = [IMG2W(kp.pt[0], kp.pt[1], image_width, image_height) for kp in keypoints]
+    world_keypoints = [
+        [IMG2W(col, row, image_width, image_height) for (col, row) in contour]
+        for contour in keypoints
+    ]
 
     draw_image(world_keypoints)
 
+    fig, ax = plt.subplots()
+    for contour in world_keypoints:
+        xs = [pt[0] for pt in contour]
+        ys = [pt[1] for pt in contour]
+        ax.plot(ys, xs, 'b-', linewidth=0.5)
+    ax.set_aspect('equal')
+    ax.invert_yaxis()
+    ax.set_title('World Coordinate Preview')
+    ax.set_xlabel('Y (mm)')
+    ax.set_ylabel('X (mm)')
+    plt.show()
+
     ##=====================================================##
 
-    move_arm(pub_command, loop_rate, home, vel, accel, 'J')  # Return to the home position
-    rospy.loginfo("Task Completed!")
+    # move_arm(pub_command, loop_rate, home, vel, accel, 'J')  # Return to the home position
+    # rospy.loginfo("Task Completed!")
 
-    print("Use Ctrl+C to exit program")
-    rospy.spin()
+    # print("Use Ctrl+C to exit program")
+    # rospy.spin()
 
 if __name__ == '__main__':
 
     try:
         main()
     # When Ctrl+C is executed, it catches the exception
-    except rospy.ROSInterruptException:
+    # except rospy.ROSInterruptException:
+    except:
         pass

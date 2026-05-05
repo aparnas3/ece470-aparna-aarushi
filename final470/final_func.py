@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import numpy as np
 from scipy.linalg import expm, logm
-from final_header import *
+# from final_header import *
 
 """
 Use 'expm' for matrix exponential.
