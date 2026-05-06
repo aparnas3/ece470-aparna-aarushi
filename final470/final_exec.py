@@ -186,8 +186,12 @@ def find_keypoints(image):
 
     img_color = cv.cvtColor(image, cv.COLOR_GRAY2BGR)
     # blurred = cv.GaussianBlur(img, (5, 5), 0)
+    # canny_img = cv.Canny(image, 100, 200)
+    
+    # contours, hierarchy = cv.findContours(canny_img, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
     canny_img = cv.Canny(image, 100, 200)
-    contours, hierarchy = cv.findContours(canny_img, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+    thinned = cv.ximgproc.thinning(canny_img)
+    contours, hierarchy = cv.findContours(thinned, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
 
     all_contours_keypoints = [] # This will hold lists of coordinates
 
@@ -225,26 +229,33 @@ def find_keypoints(image):
     return all_contours_keypoints
 
 HOVER_HEIGHT = 30
-DRAWING_HEIGHT = 10
+DRAWING_HEIGHT = 18.3
 
-PAPER_X = 125
-PAPER_Y = 60
+PAPER_X = 145
+PAPER_Y = 105
 
-PAPER_X_RANGE = 280
-PAPER_Y_RANGE = 215
+PAPER_X_RANGE = 235
+PAPER_Y_RANGE = 202
 
 world_pixel = np.array([320,82])
 
 # Function that converts image coord to world coord
 # Width should be the shorter col dimension (the image is already in portrait)
 def IMG2W(col, row, image_width, image_height):
-    # 5 mm of margin in all directions
-    scale = min((PAPER_X_RANGE-10)/image_height, (PAPER_Y_RANGE-10)/image_width)
+    # margin of 5mm per side
+    usable_x = PAPER_X_RANGE - 10
+    usable_y = PAPER_Y_RANGE - 10
 
-    x = row*scale + PAPER_X + 5
-    y = col*scale + PAPER_Y + 5
+    scale = min(usable_x / image_height, usable_y / image_width)
 
-    return x, y
+    # centering
+    offset_x = (usable_x - (image_height * scale)) / 2
+    offset_y = (usable_y - (image_width * scale)) / 2
+
+    world_x = PAPER_X + 5 + offset_x + (row * scale)
+    world_y = PAPER_Y + 5 + offset_y + (col * scale)
+
+    return world_x, world_y
 
 def draw_image(world_keypoints, pub_cmd, loop_rate, vel, accel):
     """Draw the image based on detected keypoints in world coordinates. 
@@ -299,6 +310,23 @@ def draw_image(world_keypoints, pub_cmd, loop_rate, vel, accel):
 
         current_pos = contour[-1]
 
+    # CALIBRATION
+    # dest = lab_invk(PAPER_X, PAPER_Y, HOVER_HEIGHT, YAW)
+    # move_arm(pub_cmd, loop_rate, dest, vel, accel, 'J')
+    # dest = lab_invk(PAPER_X, PAPER_Y, DRAWING_HEIGHT, YAW)
+    # move_arm(pub_cmd, loop_rate, dest, vel, accel, 'L')
+    # dest = lab_invk(PAPER_X, PAPER_Y, HOVER_HEIGHT, YAW)
+    # move_arm(pub_cmd, loop_rate, dest, vel, accel, 'L')
+
+    # dest = lab_invk(PAPER_X + PAPER_X_RANGE, PAPER_Y + PAPER_Y_RANGE, HOVER_HEIGHT, YAW)
+    # move_arm(pub_cmd, loop_rate, dest, vel, accel, 'J')
+    # dest = lab_invk(PAPER_X + PAPER_X_RANGE, PAPER_Y + PAPER_Y_RANGE, DRAWING_HEIGHT, YAW)
+    # move_arm(pub_cmd, loop_rate, dest, vel, accel, 'L')
+
+
+
+
+
 ##==========================================##
 
 """
@@ -340,8 +368,8 @@ def main():
         "cat": "cat.jpg",
         "corn": "corn.jpeg",
         "zigzag": "zigzag.jpg",
-        # "dog": "dog.jpg",
-        # "fine": "fine.jpg"
+        "dog": "dog.jpg",
+        "fine": "fine.jpg"
     }
     file = switcher.get(image_choice, "Invalid file choice")
     img_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'images', file)
@@ -361,8 +389,6 @@ def main():
         for contour in keypoints
     ]
 
-    draw_image(world_keypoints, pub_command, loop_rate, vel, accel)
-
     fig, ax = plt.subplots()
     for contour in world_keypoints:
         xs = [pt[0] for pt in contour]
@@ -374,6 +400,8 @@ def main():
     ax.set_xlabel('Y (mm)')
     ax.set_ylabel('X (mm)')
     plt.show()
+
+    draw_image(world_keypoints, pub_command, loop_rate, vel, accel)
 
     ##=====================================================##
 
